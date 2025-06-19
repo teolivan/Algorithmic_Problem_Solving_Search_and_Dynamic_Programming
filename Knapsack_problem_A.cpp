@@ -37,14 +37,31 @@ and saving the results to avoid redundant work.)
 */
 
 #include "Knapsack_problem_A.h"
-
+#include <ios>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <vector>
 using namespace std;
 
 int main(int inputData[]) {
- cout << "Hello, world!" << endl;
+std::ios_base::sync_with_stdio(false);
+ std::cin.tie(nullptr); // this and the above line is for faster I/O
+
+ // need four variables, two arrays/vectors for storing the values (will have n as index for both weight and value),
+ // one int for number of objects, and one int for the capacity of the knapsack
+ int capacityOfKnapsack;
+ int numOfObjects;
+ std::cin >> capacityOfKnapsack >> numOfObjects;
+ std::vector<int> weights(capacityOfKnapsack);
+ std::vector<int> values(capacityOfKnapsack);
+
+ for (int i = 0; i < capacityOfKnapsack; i++) {
+  std::cin >> weights[i] >> values[i];
+ }
+
+
+
  return 0;
 }
 
