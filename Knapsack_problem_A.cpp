@@ -35,8 +35,6 @@ total weight is less than or equal to a given limit and the total value is as la
  technique for solving problems by breaking them down into smaller subproblems, solving each subproblem once,
 and saving the results to avoid redundant work.)
 */
-
-#include "Knapsack_problem_A.h"
 #include <ios>
 #include <algorithm>
 #include <iostream>
@@ -44,26 +42,51 @@ and saving the results to avoid redundant work.)
 #include <vector>
 using namespace std;
 
-int main(int inputData[]) {
-std::ios_base::sync_with_stdio(false);
- std::cin.tie(nullptr); // this and the above line is for faster I/O
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr); // this and the above line is for faster I/O
 
- // need four variables, two arrays/vectors for storing the values (will have n as index for both weight and value),
- // one int for number of objects, and one int for the capacity of the knapsack
- int capacityOfKnapsack;
- int numOfObjects;
- std::cin >> capacityOfKnapsack >> numOfObjects;
- std::vector<int> weights(capacityOfKnapsack);
- std::vector<int> values(capacityOfKnapsack);
+    // keep reading until end of file (multiple test cases)
+    int capacityOfKnapsack;
+    int numOfObjects;
 
- for (int i = 0; i < capacityOfKnapsack; i++) {
-  std::cin >> weights[i] >> values[i];
- }
+    while (std::cin >> capacityOfKnapsack >> numOfObjects) {
+        // need four variables, two arrays/vectors for storing the values (will have n as index for both weight and value),
+        // one int for number of objects, and one int for the capacity of the knapsack
+        std::vector<int> weights(numOfObjects);
+        std::vector<int> values(numOfObjects);
+        std::vector<int> dp(capacityOfKnapsack + 1, 0); //dynamic programming array, initialized as max capacity + 1 with values 0
+        std::vector<vector<bool>> taken(numOfObjects, vector<bool>(capacityOfKnapsack + 1, false));
 
+        for (int i = 0; i < numOfObjects; i++) {
+            std::cin >> values[i] >> weights[i]; // value first, then weight
+        }
 
+        for (int i = 0; i < numOfObjects; i++) {
+            for (int j = capacityOfKnapsack; j >= weights[i]; j--) {
+                if (dp[j] < dp[j - weights[i]] + values[i]) {
+                    dp[j] = dp[j - weights[i]] + values[i]; // to determine if we can get a higher max by including the current item or the next
+                    taken[i][j] = true;
+                }
+            }
+        }
 
- return 0;
+        std::vector<int> result;
+        int j = capacityOfKnapsack;
+        for (int i = numOfObjects - 1; i >= 0; i--) {
+            if (taken[i][j]) {
+                result.push_back(i); // item was chosen. Put at the end of the vector
+                j -= weights[i]; // reduce knapsack capacity by chosen item's weight
+            }
+        }
+
+        cout << result.size() << '\n';
+        for (int i = result.size() - 1; i >= 0; --i) {
+            cout << result[i] << (i == 0 ? '\n' : ' ');
+        }
+    }
+
+    return 0;
 }
-
 
 
