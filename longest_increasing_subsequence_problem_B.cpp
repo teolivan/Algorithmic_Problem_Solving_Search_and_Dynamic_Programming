@@ -32,7 +32,8 @@ my notes:
  * has to be ascending
  * first print the number of items in the subsequence on one row, then print the indices of the subsequence on the other
  * row
- * solve it using dynamic programming in order to achieve the best time complexity
+ * solve it using dynamic programming in order to achieve the best time complexity - bottom-up tabulation
+ * has to be solved in O(nlogn) time - this one has quadratic time complexity. I gave up.
  */
 
 #include <ios>
@@ -43,7 +44,52 @@ my notes:
 using namespace std;
 
 int main() {
+ std::ios_base::sync_with_stdio(false);
+ std::cin.tie(nullptr); // this and the above line is for faster I/O
 
+ int numOfItems;
+ while (std::cin >> numOfItems) {
 
+  std::vector<int> arrayOfItems(numOfItems);
+  for (int i = 0; i < numOfItems; i++) {
+   cin >> arrayOfItems[i]; //put input as items into array
+  }
+
+  std::vector<int> lis(numOfItems, 1); // lis - longest increasing sequence
+  std::vector<int> prevIndex(numOfItems, -1); // previous index of lis ending at i. Using this for reconstructing the indexes of lis
+
+  int maxLength = 1;
+  int lastIndex = 0;
+
+  //bottom up
+  for (int i = 0; i < numOfItems; i++) {
+   for (int prev = 0; prev < i; prev++) {
+      if (arrayOfItems[i] > arrayOfItems[prev] && lis[i] < lis[prev] + 1) {
+       lis[i] = lis[prev]+1;
+       prevIndex[i] = prev;
+      }
+   }
+   if (lis[i] > maxLength) {
+    maxLength = lis[i];
+    lastIndex = i; //is then the longest lis, gets updated with current value
+   }
+  }
+
+  vector<int> resultIndices; //reconstruct indices of lis
+  for (int i = lastIndex; i != -1; i = prevIndex[i]) {
+   resultIndices.push_back(i);
+  }
+
+  reverse(resultIndices.begin(), resultIndices.end());
+
+  cout << maxLength << '\n';
+  for (size_t i = 0; i < resultIndices.size(); i++) {
+   cout << resultIndices[i];
+   if (i != resultIndices.size() - 1)
+    cout << ' ';
+  }
+  cout << '\n';
+ }
+ return 0;
 }
 
